@@ -17,7 +17,7 @@ const mockGraphs: Record<string, Graph> = {
       {
         id: 'node-1',
         type: 'default',
-        position: { x: 250, y: 100 },
+        position: { x: 350, y: 100 },
         data: {
           id: 'node-1',
           label: 'Postgres',
@@ -61,7 +61,7 @@ const mockGraphs: Record<string, Graph> = {
       {
         id: 'node-1',
         type: 'default',
-        position: { x: 200, y: 150 },
+        position: { x: 200, y: 350 },
         data: {
           id: 'node-1',
           label: 'Service A',
@@ -73,7 +73,7 @@ const mockGraphs: Record<string, Graph> = {
       {
         id: 'node-2',
         type: 'default',
-        position: { x: 350, y: 150 },
+        position: { x: 350, y: 250 },
         data: {
           id: 'node-2',
           label: 'Service B',

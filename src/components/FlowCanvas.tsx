@@ -16,8 +16,12 @@ import 'reactflow/dist/style.css'
 import { useGraph } from '@/hooks/useGraph'
 import { useAppStore } from '@/store/useAppStore'
 import type { GraphNode, GraphEdge } from '@/types'
+import ServiceNode from './nodes/ServiceNode'
 
-const nodeTypes: NodeTypes = {}
+const nodeTypes: NodeTypes = {
+  default: ServiceNode,
+  service: ServiceNode,
+}
 
 export function FlowCanvas() {
   const { selectedAppId, selectedNodeId, setSelectedNodeId, setIsMobilePanelOpen } = useAppStore()
@@ -28,7 +32,7 @@ export function FlowCanvas() {
     () =>
       graph?.nodes.map((node: GraphNode) => ({
         id: node.id,
-        type: node.type,
+        type: node.type || 'service',
         position: node.position,
         data: node.data,
         selected: selectedNodeId === node.id,
@@ -54,7 +58,7 @@ export function FlowCanvas() {
       setNodes(
         graph.nodes.map((node: GraphNode) => ({
           id: node.id,
-          type: node.type,
+          type: node.type || 'service',
           position: node.position,
           data: node.data,
           selected: selectedNodeId === node.id,
@@ -138,7 +142,7 @@ export function FlowCanvas() {
   return (
     <ReactFlow
       nodes={nodes}
-      edges={edges}
+      // edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
@@ -147,9 +151,9 @@ export function FlowCanvas() {
       nodeTypes={nodeTypes}
       fitView
     >
-      <Background variant="dots" gap={12} size={1} />
+      <Background gap={12} size={1} />
       <Controls />
-      <MiniMap />
+      {/* <MiniMap /> */}
     </ReactFlow>
   )
 }

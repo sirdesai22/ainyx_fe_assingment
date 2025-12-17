@@ -6,12 +6,14 @@ import { RightPanel } from './components/RightPanel'
 import { FlowCanvas } from './components/FlowCanvas'
 import { useAppStore } from './store/useAppStore'
 import { useApps } from './hooks/useApps'
+import { useTheme } from './hooks/useTheme'
 import { Menu } from 'lucide-react'
 import { Button } from './components/ui/button'
 
 function App() {
   const { data: apps } = useApps()
   const { selectedAppId, setSelectedAppId, setIsMobilePanelOpen } = useAppStore()
+  useTheme() // Initialize and sync theme
 
   useEffect(() => {
     if (apps && apps.length > 0 && !selectedAppId) {

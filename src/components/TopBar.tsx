@@ -1,11 +1,11 @@
-import { Search, Settings, Moon, User, Maximize2 } from 'lucide-react'
+import { Search, Settings, Moon, Sun, User, Maximize2 } from 'lucide-react'
 import { Button } from './ui/button'
 import { useAppStore } from '@/store/useAppStore'
 import { useApps } from '@/hooks/useApps'
 import { useReactFlow } from 'reactflow'
 
 export function TopBar() {
-  const { selectedAppId, setSelectedAppId } = useAppStore()
+  const { selectedAppId, setSelectedAppId, theme, toggleTheme } = useAppStore()
   const { data: apps } = useApps()
   const { fitView } = useReactFlow()
 
@@ -40,8 +40,17 @@ export function TopBar() {
         <Button variant="ghost" size="icon" title="Settings">
           <Settings className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon" title="Theme">
-          <Moon className="h-4 w-4" />
+        <Button
+          variant="ghost"
+          size="icon"
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          onClick={toggleTheme}
+        >
+          {theme === 'dark' ? (
+            <Sun className="h-4 w-4" />
+          ) : (
+            <Moon className="h-4 w-4" />
+          )}
         </Button>
         <Button variant="ghost" size="icon" title="Profile">
           <User className="h-4 w-4" />

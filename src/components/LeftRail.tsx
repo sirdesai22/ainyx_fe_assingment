@@ -11,16 +11,16 @@ const navItems = [
 
 export function LeftRail() {
   return (
-    <div className="w-16 border-r border-border bg-card flex flex-col items-center py-4 gap-4">
+    <div className="w-16 border-2 rounded-xl bg-white flex flex-col items-center py-4 gap-4 absolute top-1/2 -translate-y-1/2 left-0 h-fit z-10">
       {navItems.map((item, index) => {
         const Icon = item.icon
         return (
           <button
             key={index}
-            className="p-2 rounded-lg hover:bg-accent transition-colors"
+            className="p-2 rounded-lg"
             title={item.label}
           >
-            <Icon className="h-5 w-5 text-muted-foreground" />
+            <Icon className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
           </button>
         )
       })}
