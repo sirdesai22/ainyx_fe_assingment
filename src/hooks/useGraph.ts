@@ -10,6 +10,8 @@ export function useGraph(appId: string | null) {
       return mockApi.getGraph(appId)
     },
     enabled: !!appId,
+    // Refetch when appId changes
+    refetchOnMount: true,
   })
 }
 

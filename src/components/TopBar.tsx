@@ -1,8 +1,11 @@
-import { Search, Settings, Moon, Sun, User, Maximize2 } from 'lucide-react'
+import { Search, Settings, Moon, Sun, User, Maximize2, AlertCircle, Plus } from 'lucide-react'
 import { Button } from './ui/button'
 import { useSelectedAppId, useThemeState, useAppActions, useThemeActions } from '@/store/useAppStore'
 import { useApps } from '@/hooks/useApps'
 import { useReactFlow } from 'reactflow'
+import { mockApi } from '@/api/mockApi'
+import { useState } from 'react'
+import { AddNodeDialog } from './AddNodeDialog'
 
 export function TopBar() {
   const selectedAppId = useSelectedAppId()
@@ -11,9 +14,16 @@ export function TopBar() {
   const { toggleTheme } = useThemeActions()
   const { data: apps } = useApps()
   const { fitView } = useReactFlow()
+  const [errorMode, setErrorMode] = useState(mockApi.getShouldError())
+  const [addNodeDialogOpen, setAddNodeDialogOpen] = useState(false)
 
   const handleFitView = () => {
     fitView({ duration: 300 })
+  }
+
+  const handleToggleError = () => {
+    mockApi.toggleError()
+    setErrorMode(mockApi.getShouldError())
   }
 
   return (
@@ -37,8 +47,25 @@ export function TopBar() {
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => setAddNodeDialogOpen(true)}
+          className="gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          Add Node
+        </Button>
         <Button variant="ghost" size="icon" title="Fit View" onClick={handleFitView}>
           <Maximize2 className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={errorMode ? 'destructive' : 'ghost'}
+          size="icon"
+          title={errorMode ? 'Disable error simulation' : 'Simulate API errors'}
+          onClick={handleToggleError}
+        >
+          <AlertCircle className="h-4 w-4" />
         </Button>
         <Button variant="ghost" size="icon" title="Settings">
           <Settings className="h-4 w-4" />
@@ -59,6 +86,7 @@ export function TopBar() {
           <User className="h-4 w-4" />
         </Button>
       </div>
+      <AddNodeDialog open={addNodeDialogOpen} onOpenChange={setAddNodeDialogOpen} />
     </div>
   )
 }
