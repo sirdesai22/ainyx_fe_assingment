@@ -6,6 +6,8 @@ A responsive ReactFlow-based application graph builder UI built with React, Type
 
 - **Layout Composition**: Top bar, left rail, right panel, and dotted canvas
 - **ReactFlow Integration**: Interactive graph with nodes, edges, drag, select, delete, zoom, and pan
+- **Node Management**: Add new nodes via dialog, delete nodes with Delete/Backspace keys
+- **Node Types**: Service nodes (blue theme) and DB nodes (black theme) with distinct styling
 - **Node Inspector**: Service node inspector with status pills, tabs, and synced slider/input controls
 - **TanStack Query**: Mock API integration with loading and error states
 - **Zustand State Management**: Centralized state for app/node selection and UI state
@@ -115,6 +117,8 @@ src/
   - Prevents node selection when interacting with internal controls
   - Dynamic slider based on active tab (CPU/Memory/Disk/Region)
   - Real-time data synchronization
+  - Node type differentiation: Service nodes use blue theme, DB nodes use black theme
+  - Visual distinction with type badges and color-coded styling
 
 ### 5. **Theme Management**
 - **Decision**: Zustand persist middleware for theme preference
@@ -155,8 +159,10 @@ src/
 
 5. **Graph Data**
    - Limited to 5 predefined apps with static graph data
-   - No ability to create new apps or nodes via UI (only via code)
-   - **Future**: Add "Add Node" and "Add App" functionality
+   - "Add Node" functionality is implemented - users can create new nodes via dialog
+   - New nodes are added to the current graph but not persisted to mock API
+   - No ability to create new apps via UI (only via code)
+   - **Future**: Add "Add App" functionality and persist new nodes to backend
 
 6. **Tab-Based Slider**
    - Slider value conversion between different metric types (CPU, Memory, Disk, Region) uses scaling factors
@@ -178,6 +184,8 @@ src/
 ✅ Layout: top bar, left rail, right panel, dotted canvas  
 ✅ Responsive: right panel becomes a mobile drawer  
 ✅ ReactFlow: 3+ nodes, drag, select, delete (Delete/Backspace), zoom/pan, fit view  
+✅ Node management: Add new nodes via dialog, delete with Delete/Backspace keys  
+✅ Node types: Service (blue) and DB (black) nodes with distinct styling  
 ✅ Node inspector: tabs + status pill + synced slider/input  
 ✅ TanStack Query: mock /apps and /apps/:appId/graph + loading/error  
 ✅ Zustand: selected app/node, mobile panel open, active tab  
