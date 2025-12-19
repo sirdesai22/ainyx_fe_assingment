@@ -2,11 +2,12 @@ import { Search, Plus } from 'lucide-react'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { useApps } from '@/hooks/useApps'
-import { useAppStore } from '@/store/useAppStore'
+import { useSelectedAppId, useAppActions } from '@/store/useAppStore'
 
 export function AppSelector() {
   const { data: apps, isLoading, error } = useApps()
-  const { selectedAppId, setSelectedAppId } = useAppStore()
+  const selectedAppId = useSelectedAppId()
+  const { setSelectedAppId } = useAppActions()
 
   if (isLoading) {
     return (

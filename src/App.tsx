@@ -4,7 +4,7 @@ import { TopBar } from './components/TopBar'
 import { LeftRail } from './components/LeftRail'
 import { RightPanel } from './components/RightPanel'
 import { FlowCanvas } from './components/FlowCanvas'
-import { useAppStore } from './store/useAppStore'
+import { useSelectedAppId, useAppActions } from './store/useAppStore'
 import { useApps } from './hooks/useApps'
 import { useTheme } from './hooks/useTheme'
 import { Menu } from 'lucide-react'
@@ -12,7 +12,8 @@ import { Button } from './components/ui/button'
 
 function App() {
   const { data: apps } = useApps()
-  const { selectedAppId, setSelectedAppId, setIsMobilePanelOpen } = useAppStore()
+  const selectedAppId = useSelectedAppId()
+  const { setSelectedAppId, setIsMobilePanelOpen } = useAppActions()
   useTheme() // Initialize and sync theme
 
   useEffect(() => {

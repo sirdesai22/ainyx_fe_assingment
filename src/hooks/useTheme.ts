@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { useAppStore } from '@/store/useAppStore'
+import { useThemeState, useThemeActions } from '@/store/useAppStore'
 
 export function useTheme() {
-  const { theme, setTheme } = useAppStore()
+  const theme = useThemeState()
+  const { setTheme } = useThemeActions()
 
   useEffect(() => {
     // Apply theme on mount and when it changes

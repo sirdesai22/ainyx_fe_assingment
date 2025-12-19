@@ -14,7 +14,7 @@ import ReactFlow, {
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { useGraph } from '@/hooks/useGraph'
-import { useAppStore } from '@/store/useAppStore'
+import { useSelectedAppId, useSelectedNodeId, useAppActions } from '@/store/useAppStore'
 import type { GraphNode, GraphEdge } from '@/types'
 import ServiceNode from './nodes/ServiceNode'
 
@@ -24,7 +24,9 @@ const nodeTypes: NodeTypes = {
 }
 
 export function FlowCanvas() {
-  const { selectedAppId, selectedNodeId, setSelectedNodeId, setIsMobilePanelOpen } = useAppStore()
+  const selectedAppId = useSelectedAppId()
+  const selectedNodeId = useSelectedNodeId()
+  const { setSelectedNodeId, setIsMobilePanelOpen } = useAppActions()
   const { data: graph, isLoading, error } = useGraph(selectedAppId)
   const { fitView } = useReactFlow()
 

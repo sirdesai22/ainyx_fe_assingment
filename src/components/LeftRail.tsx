@@ -11,7 +11,7 @@ const navItems = [
 
 export function LeftRail() {
   return (
-    <div className="w-16 border-2 rounded-xl bg-white flex flex-col items-center py-4 gap-4 absolute top-1/2 -translate-y-1/2 left-0 h-fit z-10">
+    <div className="w-16 border-2 rounded-xl bg-black flex flex-col items-center py-4 gap-4 absolute top-1/2 -translate-y-1/2 left-0 h-fit z-10">
       {navItems.map((item, index) => {
         const Icon = item.icon
         return (

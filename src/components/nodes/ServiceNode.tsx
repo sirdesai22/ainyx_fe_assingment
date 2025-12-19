@@ -1,5 +1,5 @@
-import { memo } from "react";
-import { Handle, Position, NodeProps } from "reactflow";
+import { memo, useState, useEffect } from "react";
+import { NodeProps, useReactFlow } from "reactflow";
 import { Badge } from "../ui/badge";
 import {
   Database,
@@ -9,10 +9,17 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
+  Cpu,
+  HardDrive,
+  Globe,
+  MemoryStick,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { NodeData } from "@/types";
 import { Slider } from "../ui/slider";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 const nodeIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   postgres: Database,
@@ -29,8 +36,35 @@ function getNodeIcon(label: string) {
   return nodeIcons.default;
 }
 
-function ServiceNode({ data, selected }: NodeProps<NodeData>) {
+function ServiceNode({ data, selected, id }: NodeProps<NodeData>) {
   const Icon = getNodeIcon(data.label);
+  const { setNodes } = useReactFlow();
+  const [activeTab, setActiveTab] = useState("cpu");
+  const [sliderValue, setSliderValue] = useState(data.value || 0);
+
+  // Sync slider value with node data
+  useEffect(() => {
+    setSliderValue(data.value || 0);
+  }, [data.value]);
+
+  // Update node data when slider changes
+  const handleSliderChange = (value: number) => {
+    setSliderValue(value);
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === id) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              value,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  };
 
   const statusConfig = {
     healthy: {
@@ -56,99 +90,151 @@ function ServiceNode({ data, selected }: NodeProps<NodeData>) {
   const status = statusConfig[data.status] || statusConfig.healthy;
   const StatusIcon = status.icon;
 
+  const tabIcons = {
+    cpu: Cpu,
+    memory: MemoryStick,
+    disk: HardDrive,
+    region: Globe,
+  };
+
+  const tabLabels = {
+    cpu: "CPU",
+    memory: "Memory",
+    disk: "Disk",
+    region: "Region",
+  };
+
+  // Prevent node selection when clicking on interactive elements
+  const stopPropagation = (e: React.MouseEvent | React.PointerEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div
+    <Card
       className={cn(
-        "px-4 py-4 rounded-xl border min-w-[400px] transition-all flex flex-col gap-5 items-center justify-center bg-black",
+        "min-w-[400px] bg-black border-border/50 transition-all flex flex-col gap-5",
         selected
           ? "border-primary/50 shadow-lg ring-2 ring-primary/20 scale-[1.02]"
-          : "border-border/50 hover:border-primary/30 hover:shadow-lg"
+          : "hover:border-primary/30 hover:shadow-lg"
       )}
     >
       {/* <Handle type="target" position={Position.Top} className="w-3 h-3 !bg-primary" /> */}
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3 w-full">
-        <div className="flex items-center gap-3">
-          <Icon className="h-5 w-5 text-white" />
-          <div>
-            <h3 className="font-semibold text-base text-foreground">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-3">
+            <Icon className="h-5 w-5 text-white" />
+            <CardTitle className="text-base text-foreground">
               {data.label}
-            </h3>
-            {/* <div className="flex items-center gap-1.5 mt-0.5">
-              <div className={cn('w-1.5 h-1.5 rounded-full', status.color)} />
-              <span className="text-xs text-muted-foreground">{status.label}</span>
-            </div> */}
+            </CardTitle>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant="outline"
+              className="border-green-500 bg-green-500/10 text-green-400 px-3 py-1.5"
+              onPointerDown={stopPropagation}
+              onClick={stopPropagation}
+            >
+              $0.03/hr
+            </Badge>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 bg-primary/20 hover:bg-primary/30"
+              onPointerDown={stopPropagation}
+              onClick={stopPropagation}
+            >
+              <Settings className="h-4 w-4 text-white" />
+            </Button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex justify-center items-center border-2 border-green-500 px-3 py-1.5 rounded-xl">
-            <span className="text-xs text-white">$0.03/hr</span>
+      </CardHeader>
+
+      <CardContent className="space-y-4 pt-0">
+        {/* Resource Metrics Tabs & Values */}
+        <div className="space-y-2">
+          {/* Top metric values */}
+          <div className="flex items-center justify-around text-xs font-medium text-white/90">
+            <span>0.02</span>
+            <span>0.05 GB</span>
+            <span>10.00 GB</span>
+            <span>1</span>
           </div>
-          <button className="p-1.5 hover:bg-primary/20 transition-colors bg-primary/20 rounded-xl">
-            <Settings className="h-4 w-4 text-muted-foreground" />
-          </button>
-        </div>
-      </div>
 
-      {/* Metrics */}
-      {/* Resource Metrics Tabs & Values */}
-      <div className="mb-3 w-full">
-        {/* Top metric values */}
-        <div className="flex items-center justify-around mb-2 text-xs font-medium text-white/90">
-          <span>0.02</span>
-          <span>0.05 GB</span>
-          <span>10.00 GB</span>
-          <span>1</span>
+          {/* Tabs */}
+          <div
+            onPointerDown={stopPropagation}
+            onClick={stopPropagation}
+            onMouseDown={stopPropagation}
+          >
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-4 bg-[#181a23] p-1">
+                {(Object.keys(tabIcons) as Array<keyof typeof tabIcons>).map(
+                  (key) => {
+                    const TabIcon = tabIcons[key];
+                    return (
+                      <TabsTrigger
+                        key={key}
+                        value={key}
+                        className="flex items-center gap-1 text-white/80 data-[state=active]:bg-white/10 data-[state=active]:text-white"
+                        onPointerDown={stopPropagation}
+                        onClick={stopPropagation}
+                        onMouseDown={stopPropagation}
+                      >
+                        <TabIcon className="h-4 w-4" />
+                        <span>{tabLabels[key]}</span>
+                      </TabsTrigger>
+                    );
+                  }
+                )}
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
-        {/* Tabs */}
-        <div className="flex bg-[#181a23] rounded-xl p-1 justify-around">
-          <button className="flex items-center gap-1 px-3 py-2 rounded-lg text-white/80 font-medium hover:bg-white/10 transition-all">
-            <Icon className="h-4 w-4" />
-            <span>CPU</span>
-          </button>
-          <button className="flex items-center gap-1 px-3 py-2 rounded-lg text-white/80 font-medium hover:bg-white/10 transition-all">
-            <Icon className="h-4 w-4" />
-            <span>Memory</span>
-          </button>
-          <button className="flex items-center gap-1 px-3 py-2 rounded-lg text-white/80 font-medium hover:bg-white/10 transition-all">
-            <Icon className="h-4 w-4" />
-            <span>Disk</span>
-          </button>
-          <button className="flex items-center gap-1 px-3 py-2 rounded-lg text-white/80 font-medium hover:bg-white/10 transition-all">
-            <Icon className="h-4 w-4" />
-            <span>Region</span>
-          </button>
+
+        {/* Slider Controls */}
+        <div 
+          className="flex items-center justify-between gap-3 w-full"
+          onPointerDown={stopPropagation}
+          onClick={stopPropagation}
+          onMouseDown={stopPropagation}
+        >
+          <div 
+            className="flex-1"
+            onPointerDown={stopPropagation}
+            onClick={stopPropagation}
+            onMouseDown={stopPropagation}
+          >
+            <Slider
+              className="w-full"
+              min={0}
+              max={100}
+              step={1}
+              value={[sliderValue]}
+              onValueChange={(value) => handleSliderChange(value[0])}
+            />
+          </div>
+          <span className="text-xs text-white/80 min-w-[3.5rem] text-right font-medium">
+            {sliderValue}%
+          </span>
         </div>
-      </div>
 
-      {/* Slider Controls */}
-      <div className="w-full flex items-center justify-between gap-2">
-        <Slider
-          className="w-full z-50"
-          min={0}
-          max={100}
-          value={50}
-          onValueChange={(value: number) => console.log(value)}
-        />
-          <span className="text-xs text-white/80">100%</span>
-      </div>
-
-      {/* Status */}
-      <div className="flex items-center justify-between w-full">
-        <Badge variant={status.variant} className="text-xs font-medium">
-          <StatusIcon className="h-3 w-3 mr-1" />
-          {status.label}
-        </Badge>
-        <Icon className="h-4 w-4 text-white" />
-      </div>
+        {/* Status */}
+        <div className="flex items-center justify-between w-full">
+          <Badge variant={status.variant as 'default' | 'secondary' | 'destructive' | 'outline'} className="text-xs font-medium">
+            <StatusIcon className="h-3 w-3 mr-1" />
+            {status.label}
+          </Badge>
+          <Icon className="h-4 w-4 text-white" />
+        </div>
+      </CardContent>
 
       {/* <Handle
         type="source"
         position={Position.Bottom}
         className="w-3 h-3 !bg-primary"
       /> */}
-    </div>
+    </Card>
   );
 }
 

@@ -4,12 +4,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { Slider } from './ui/slider'
-import { useAppStore } from '@/store/useAppStore'
+import { useSelectedNodeId, useActiveInspectorTab, useAppActions } from '@/store/useAppStore'
 import { useReactFlow } from 'reactflow'
 import type { NodeData } from '@/types'
 
 export function NodeInspector() {
-  const { selectedNodeId, activeInspectorTab, setActiveInspectorTab } = useAppStore()
+  const selectedNodeId = useSelectedNodeId()
+  const activeInspectorTab = useActiveInspectorTab()
+  const { setActiveInspectorTab } = useAppActions()
   const { getNode, setNodes } = useReactFlow()
 
   const node = selectedNodeId ? getNode(selectedNodeId) : null
@@ -87,7 +89,7 @@ export function NodeInspector() {
     <div className="p-4 space-y-4">
       <div className="space-y-2">
         <div className="text-sm font-semibold">Service Node</div>
-        <Badge variant={statusVariant}>{statusLabel}</Badge>
+        <Badge variant={statusVariant as 'default' | 'secondary' | 'destructive' | 'outline'}>{statusLabel}</Badge>
       </div>
 
       <Tabs value={activeInspectorTab} onValueChange={setActiveInspectorTab}>
@@ -131,8 +133,8 @@ export function NodeInspector() {
                 />
               </div>
               <Slider
-                value={value}
-                onValueChange={handleValueChange}
+                value={[value]}
+                onValueChange={(value) => handleValueChange(value[0])}
                 min={0}
                 max={100}
               />

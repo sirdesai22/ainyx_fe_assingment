@@ -1,11 +1,14 @@
 import { Search, Settings, Moon, Sun, User, Maximize2 } from 'lucide-react'
 import { Button } from './ui/button'
-import { useAppStore } from '@/store/useAppStore'
+import { useSelectedAppId, useThemeState, useAppActions, useThemeActions } from '@/store/useAppStore'
 import { useApps } from '@/hooks/useApps'
 import { useReactFlow } from 'reactflow'
 
 export function TopBar() {
-  const { selectedAppId, setSelectedAppId, theme, toggleTheme } = useAppStore()
+  const selectedAppId = useSelectedAppId()
+  const theme = useThemeState()
+  const { setSelectedAppId } = useAppActions()
+  const { toggleTheme } = useThemeActions()
   const { data: apps } = useApps()
   const { fitView } = useReactFlow()
 

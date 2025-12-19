@@ -1,10 +1,12 @@
 import { AppSelector } from './AppSelector'
 import { NodeInspector } from './NodeInspector'
-import { useAppStore } from '@/store/useAppStore'
+import { useSelectedNodeId, useIsMobilePanelOpen, useAppActions } from '@/store/useAppStore'
 import { Sheet, SheetContent, SheetClose } from './ui/sheet'
 
 export function RightPanel() {
-  const { selectedNodeId, isMobilePanelOpen, setIsMobilePanelOpen } = useAppStore()
+  const selectedNodeId = useSelectedNodeId()
+  const isMobilePanelOpen = useIsMobilePanelOpen()
+  const { setIsMobilePanelOpen } = useAppActions()
 
   const panelContent = (
     <div className="h-full flex flex-col border-l border-border bg-card">
